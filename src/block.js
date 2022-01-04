@@ -51,11 +51,11 @@ class Block {
                 reject(error)
             }
             // Comparing if the hashes changed
-            const hashHasChanged = originalHash.toString(crypto.enc.Hex) !== newHash.toString(crypto.enc.Hex);
+            const hashIsValid = originalHash.toString(crypto.enc.Hex) === newHash.toString(crypto.enc.Hex);
             // Returning the Block is not valid
             // Returning the Block is valid
             this.hash = originalHash
-            resolve(hashHasChanged)
+            resolve(hashIsValid)
         });
     }
 

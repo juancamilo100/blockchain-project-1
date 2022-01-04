@@ -201,10 +201,10 @@ class Blockchain {
      * 2. Each Block should check the with the previousBlockHash
      */
     validateChain() {
-        let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            for (let i = 0; i < this.chain.length; i++) {
+            for (let i = 1; i < this.chain.length; i++) {
+                const previousBlock = this.chain[i - 1];
                 const block = this.chain[i];
                 const hashIsValid = await block.validate();
 
@@ -212,8 +212,14 @@ class Blockchain {
                     errorLog.push(`Error while validating hash for block of height ${block.height}`);
                 }
 
-                const previousBlock = i > 0 ? this.chain[i - 1] : null;
-                const previousHashIsValid = !previousBlock && (block.previousBlockHash.toString(crypto.enc.Hex) === previousBlock.hash.toString(crypto.enc.Hex));
+                let previousHashIsValid;
+                if(!previousBlock || !previousBlock.hash) {
+                    previousHashIsValid = true
+                }
+                else {
+                    previousHashIsValid = block.previousBlockHash.toString(crypto.enc.Hex) 
+                        === previousBlock.hash.toString(crypto.enc.Hex)
+                }
 
                 if(!previousHashIsValid) {
                     errorLog.push(`Error while validating previous block hash for block of height ${block.height}`);
